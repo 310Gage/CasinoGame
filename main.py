@@ -1,5 +1,3 @@
-# my manifesto about how much i hate 
-
 import random
 import asyncio
 import warnings
