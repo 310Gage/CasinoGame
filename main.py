@@ -24,7 +24,7 @@ BANNER = """
 3:::::::::::::::33  1::::::::::1    00:::::::::00             CCC::::::::::::C  A:::::A                 A:::::A  S:::::::::::::::SS  I::::::::I N::::::N        N::::::N    OO:::::::::OO   
  333333333333333    111111111111      000000000                  CCCCCCCCCCCCC AAAAAAA                   AAAAAAA  SSSSSSSSSSSSSSS    IIIIIIIIII NNNNNNNN         NNNNNNN      OOOOOOOOO\n\n\n\n"""
  
-run_banner = True   #? Set this to False if you dont want to emulate loading screen
+run_banner = False   #? Set this to False if you dont want to emulate loading screen
 
 while run_banner == True:
     async def print_banner():
@@ -54,6 +54,69 @@ while run_banner == True:
     
 run_game = True
 wallet_amount = int(100)
+
+def deal_card():
+    cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10,]
+    card = random.choice(cards) 
+    return card
+
+def calculate_score(cards): 
+    if sum(cards) == 21 and len(cards) == 2: 
+        return 0
+    if 11 in cards and sum(cards) > 21:
+        cards.remove(11)
+        cards.append(1)
+    return sum(cards)
+
+
+def compare(user_score, computer_score): 
+    if user_score == computer_score:
+        return "Draw"
+    elif computer_score == 0:
+        return "Lose, opponent has Blackjack"
+    elif user_score == 0:
+        return "Win with a Blackjack!"
+    elif user_score > 21:
+        return "You went over 21. You lose."
+    elif computer_score > 21:
+        return "Opponent went over. You win!"
+    elif user_score > computer_score:
+        return "You win! :D"
+    else:
+        return "You Lose!"
+
+def playgame():
+    is_game_over=False
+    user_cards= []
+    computer_cards = []
+    for _ in range(2):
+        user_cards.append(deal_card())
+        computer_cards.append(deal_card())
+    while not is_game_over:
+        user_score = calculate_score(user_cards)
+        computer_score = calculate_score(computer_cards)
+        print(f"your cards: {user_cards}, current score: {user_score}\n")
+        print(f"computer's first card: {computer_cards[0]}\n")
+        if user_score == 0 or computer_cards == 0 or user_score > 21:
+            is_game_over = True
+        else:
+            user_should_deal = input('Type (Y) to hit or enter to stand\n')
+            if user_should_deal != False:
+                user_cards.append(deal_card())
+                user_score = calculate_score(user_cards)
+            else:
+                is_game_over = True
+        while computer_score != 0 and computer_score < 17:
+            computer_cards.append(deal_card())
+            computer_score = calculate_score(computer_cards)
+        print(f"Your final hand: {user_cards}, final score: {user_score}\n")
+        print(f"Computer final hand: {computer_cards}, final score: {computer_score}\n")
+        print(compare(user_score, computer_score))
+
+
+
+
+
 
 while run_game == True:
     print(f"Wallet: {wallet_amount}")
@@ -100,7 +163,12 @@ while run_game == True:
                         end_game_decision = input('Continue playing? y/n\n(y:Yes | n:No)')
                 if end_game_decision.upper() == 'N':
                      run_game = False
+        else:
+            while input("Type (Y) to start, hit enter to leave"):
+                playgame()
+                
+                    
+                
                         
-    if __name__ == "__main__":
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(SLOTS())
+
+    SLOTS()
